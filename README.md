@@ -9,7 +9,7 @@ This guide provides explanations and examples for commonly used Docker commands 
 Here are some data files in the `data` folder:
 
 - [1. Introduction To Docker](Notes/1-Notes.md)
-- [@. Setuo For Docker ](Notes/2-Notes.md)
+- [2. Setup For Docker ](Notes/2-Notes.md)
 - [3. Command In Details](Notes/3-Command_In_Details.txt)
 - [4. Different App Docker ](Notes/4-Different_App_Docker.txt)
 - [5. Docker Network](Notes/5-Docker_Network.txt)
