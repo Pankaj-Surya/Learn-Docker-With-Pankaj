@@ -1,0 +1,154 @@
+================
+Docker Compose
+================
+
+=> Now a days projects are developing based on Microservices Architecture
+
+=> Our application requires multiple containers for execution
+
+			a) Frontend app container
+			b) Backend apis containers (microservices)
+			c) DB containers
+
+-> Creating multiple containers manually is very difficult and time taking process.
+
+Note: Managing "Multi - Container" based applications is difficult task.
+
+
+################ Docker Compose is used for Managing Multiple - Containers ###############
+
+=> Docker compose is a tool which is used to manage multi container based applications
+
+=> Using Docker compose we can easily setup & deploy mulitple containers
+
+=> We will use "docker-compose.yml" file to provide containers information to Docker Compose tool
+
+=> Docker Compose YML should contain all the information related to containers creation.
+
+=========================
+Docker Compose YML File
+========================
+
+version : 
+
+services :
+
+network:
+
+volumes:
+
+
+Note: Docker Compose Default file name is  "docker-compose.yml"  (we can change it also)
+
+=> Docker Compose file we will keep in source code repository.
+
+
+============================
+Installing Docker Compose
+============================
+
+# download docker compose
+$ sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+# Give permission
+$ sudo chmod +x /usr/local/bin/docker-compose
+	
+# How to check docker compose is installed or not
+$ docker-compose --version
+
+===================================================
+Deploy Spring Boot + MySQL  with Docker Compose
+===================================================
+
+$ git clone https://github.com/Pankajitschool/spring-boot-mysql-docker-compose.git
+$ cd spring-boot-mysql-docker-compose
+$ mvn clean package
+$ docker build -t spring-boot-mysql-app .
+$ docker images
+$ docker-compose up -d
+$ docker-compose ps
+
+=> Access the application
+
+		URL : http://ec2-public-ip:8080/
+
+
+# check app container logs
+$ docker logs <app-container-name>
+
+# Connect to DB Container
+$ docker exec -it <db-container-name> /bin/bash
+
+# connect with mysql db using mysql client
+$ mysql -u root -p
+
+# display databases available in mysql
+$ show databases
+
+# select db name (sbms is our db name)
+$ use sbms
+
+# display tables created in database
+$ show tables
+
+# Display table data( book is our tablename)
+$ select * from book;
+
+# exit from database
+$ exit
+
+# exit from container
+$ exit
+
+
+========================
+Docker Compose Commands
+========================
+
+# Create Containers using Docker Compose
+$ docker-compose up
+
+# Create Containers using different file name
+$ docker-compose -f <filename> up
+
+# Run docker containers in detached mode
+$ docker-compose up -d
+
+# Display containers created by docker compose
+$ docker-compose ps
+
+# Display docker images
+$ docker-compose images
+
+# Check container logs
+$ docker logs -f <container-name>
+
+# Stop & remove docker containers
+$ docker-compose down
+
+=====================================================
+
+version: "3"
+services: 
+  application:
+    image: springboot-mysql-app
+    ports:
+      - 8080:8080
+    networks:
+      - springboot-db-net
+    depends_on:
+      - mysqldb
+    volumes:
+      - /data/springboot-app
+  mysqldb:
+    image: mysql:5.7
+    networks:
+      - springboot-db-net
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=sbms
+    volumes:
+      - /data/mysql
+networks: 
+ springboot-db-net:
+=============================================

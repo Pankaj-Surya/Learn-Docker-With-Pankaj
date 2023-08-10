@@ -1,0 +1,199 @@
+==================================
+Java applications Dockerization
+=================================
+
+=> We can see two types of java applications in the companies
+
+	1) Normal Java Application without Spring Boot
+
+	2) Java Application with Spring Boot
+
+
+Note: Spring Boot is ready made framework to make java application development simple.
+
+=> Normal Java Web Applications will be packaged as war file and war file will be deployed in webserver 
+	(Ex: tomcat)
+
+=> Spring Boot applications will be packaged as jar file and we need to run the jar file. It will take care of server internally (Embedded Server).
+
+
+#### Java Maven Web App Git Repo : https://github.com/Pankajitschool/maven-web-app.git #######
+
+===================Dockerfile For Java Web Application====================
+
+FROM tomcat:8.0.20-jre8
+
+COPY target/app.war  /usr/local/tomcat/webapps/app.war
+
+EXPOSE 8080
+
+==============================Working Procedure============================
+
+# Connect to Docker Machine
+
+$ sudo service docker start
+$ sudo yum install git
+$ sudo yum install maven
+$ git clone https://github.com/Pankajitschool/maven-web-app.git
+$ cd maven-web-app
+$ mvn clean package
+$ ls -l target
+$ docker build -t maven-web-app .
+$ docker images
+$ docker run -d -p 8080:8080 maven-web-app
+$ docker ps
+
+Note: Enable 8080 Port in Security Group Inbound Rules (Custom TCP - 8080) which is attached to docker machine.
+
+				Type : Custom TCP
+				Port Range : 8080
+				Source : Anywhere IPv4
+
+=> Access our application in browser
+
+		URL : http://ec2-vm-publicip:8080/maven-web-app/
+
+====================================
+Dockerizing Spring Boot Application
+====================================
+
+### Spring Boot App Git Repo : https://github.com/Pankajitschool/spring-boot-docker-app.git ####
+
+=> Spring Boot app will be packaged as jar file (even if it is web app)
+
+=> Spring Boot will have embedded tomcat server to run
+
+=> We no need to deploy Spring Boot app in server manually.
+
+=> We just need to run spring boot app jar file, it will care of server and deployment.
+
+
+======Spring Boot Application Dockerfile=====
+
+FROM openjdk:11
+
+COPY target/app.jar  /usr/app/app.jar
+
+WORKDIR /usr/app/
+
+EXPOSE 8080
+
+ENTRYPOINT [ "java", "-jar", "app.jar" ]
+
+==============Working Procedure=====
+
+$ git clone https://github.com/Pankajitschool/spring-boot-docker-app.git
+$ cd spring-boot-docker-app
+$ ls -l
+$ mvn clean package
+$ ls -l target
+$ docker images
+$ docker build -t sbapp .
+$ docker images
+$ docker run -d -p 9090:8080 sbapp
+$ docker ps
+
+Note: Enable 9090 port in security group of docker machine
+
+=> Access the application in browser
+
+		URL : http://ec2-public-ip:9090/
+
+======================================================================================================
+
+
+=======================
+Python App with Docker
+=======================
+
+=> Python is a general purpose scritping language
+
+=> Python programs will have .py extension
+
+=> Compilation is not required for Python programs
+
+
+=============  Python App Dockerfile ==========
+
+FROM python:3.6
+
+MAINTAINER Pankaj <Pankaj.b@oracle.com>
+
+COPY . /app/
+
+WORKDIR /app/
+
+EXPOSE 5000
+
+RUN pip install -r requirements.txt
+
+ENTRYPOINT [ "python", "app.py" ]
+
+
+==================
+Working Procedure
+==================
+
+$ docker system prune -a
+
+$ git clone https://github.com/Pankajitschool/python-flask-docker-app.git
+
+$ cd python-flask-docker-app
+
+$ ls -l
+
+$ cat Dockerfile
+
+$ docker build -t python-flask-app .
+
+$ docker images
+
+$ docker run -d -p 5000:5000 python-flask-app
+
+$ docker ps
+
+Note: As we have mapped container port 5000 to host port 5000 we need to enable 5000 port in security group.
+
+=> Access Python Application in Browser
+
+		URL : http://ec2-public-ip:5000/
+
+===================Trobleshooting=========================
+
+# Print container logs
+$ docker logs <container-id>
+
+# Get into docker container 
+$ docker exec -it <container-id>  /bin/bash
+
+# To comeout from container use 'exit' command
+
+=============================================================
+
+
+
+======================
+React JS with Docker
+======================
+
+=> React JS is a java script library
+
+=> React JS is used to develop Front end of the application (user interface)
+
+=> React JS will use Node Package Manager to install required sotwares
+
+### React App Git Repo : https://github.com/Pankajitschool/React_App.git ###
+
+
+=========== React JS App Dockerfile =============
+FROM node:latest
+WORKDIR /app
+COPY package.json ./
+RUN npm install
+COPY . .
+CMD ["npm", "start"]
+=====================================================
+
+
+
+

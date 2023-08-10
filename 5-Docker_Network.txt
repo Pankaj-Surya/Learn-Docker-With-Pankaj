@@ -1,0 +1,48 @@
+===============
+Docker Network
+===============
+
+=> Network is all about communication
+
+=> Docker Network is used to provided isolated network for Docker Container
+
+=> In Docker we have below 3 defult networks
+
+			1) bridge
+			2) host
+			3) none
+
+=> In Docker we have network drivers
+
+1) Bridge  ---> This is default network driver
+2) Host
+3) None
+4) Overlay ----> Docker Swarm
+5) Macvlan
+
+
+-> Bridge driver is recommended driver when we are using standalone container. It will assign one IP for for our docker container.
+
+-> Host driver is also used to run standalone container but it will not assign any IP for container.
+
+-> None means no network will be available for docker container.
+
+-> Overlay network driver is used for Orchestration. Docker swarm will use this overlay driver
+
+-> Macvlan network driver provide physical IP for container.
+
+
+# Display Docker Networks
+$ docker network ls
+
+# Create docker network
+$ docker network create Pankajit-nw
+
+# Inspect Docker Network
+$ docker network inspect Pankajit-nw
+
+# Run Docker container with our network
+$ docker run -d -p 9090:9090 --network Pankajit-nw Pankajit/spring-boot-rest-api
+
+# Delete Docker network
+$ docker network rm Pankajit-nw

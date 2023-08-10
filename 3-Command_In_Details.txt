@@ -1,0 +1,291 @@
+============
+Dockerfile
+===========
+
+=> Dockerfile contains set of instructions to build docker image
+
+=> In Dockerfile we will use DSL (Domain Specific Language)
+
+=> Docker Engine will read Dockerfile instructions from top to bottom to process
+
+=> In Dockerfile we will use below keywords
+
+
+1) FROM
+2) MAINTAINER
+3) COPY
+4) ADD
+5) RUN
+6) CMD
+7) ENTRYPOINT
+8) ENV
+9) ARG
+10) WORKDIR
+11) EXPOSE
+12) VOLUME
+13) USER
+14) LABEL
+
+
+===========
+FROM
+=========
+
+=> It represents base image to create our docker image
+
+Syntax:
+
+FROM java:1.8
+FROM python:1.2
+FROM mysql:8.5
+FROM tomcat:9.5
+
+
+==============
+Maintainer
+==============
+
+=> It is used to specify docker file author information
+
+Syntax:
+
+MAINTAINER  Pankaj <pankaj@oracle.com>
+
+=====
+COPY
+======
+
+=> It is used to copy the files from source to destination while creating docker image
+
+Syntax:
+
+COPY  <SRC>  <DESTINATION>
+
+
+Ex:    COPY  target/sb-api.war  /app/tomcat/webapps/sb-api.war
+
+
+=====
+ADD
+======
+
+=> It is used to copy the files from source to destination while creating docker image
+
+Syntax:
+
+ADD  <SRC>  <DESTINATION>
+
+ADD  <HTTP-URL>  <DESTINATION>
+
+
+Ex:    ADD  <url>   /app/tomcat/webapps/sb-api.war
+
+
+==========================================================
+Q) What is the difference between COPY and ADD command ?
+==========================================================
+
+COPY : It can copy from one path to another path with in the same machine.
+
+ADD : It can copy from one path to another path & it supprts URL also as source.
+
+
+===========
+RUN
+===========
+
+-> RUN instructions will execute while creating docker image
+
+Syntax:
+
+RUN yum install git
+RUN yum install maven
+RUN git clone <repo-url>
+RUN cd <repo-name>
+RUN mvn clean package
+
+Note: We can write multiple RUN instructions, docker engine will process from top to bottom.
+
+====
+CMD
+====
+
+=> CMD instructions will execute while creating docker container
+
+=> Using CMD command we can run our application in container
+
+Syntax:
+
+CMD sudo start tomcat
+
+CMD java -jar <jar-file>
+
+
+Note: We can write multiple CMD instructions but docker engine will process only last CMD instruction.
+
+
+================================================
+Q) What is the difference between RUN and CMD ?
+================================================
+
+-> RUN instructions will execute while creating docker image
+=> CMD instructions will execute while creating docker container
+
+
+=> We can write multiple RUN instructions, docker engine will process from top to bottom.
+=> We can write multiple CMD instructions but docker engine will process only last CMD instruction.
+
+Note: There is no use of writing multiple CMD instructions.
+
+===============
+Sample Docker
+==============
+
+FROM ubuntu
+
+MAINTAINER Pankaj<Pankaj.b@oracle.com>
+
+RUN echo "Hi, i am run - 1"
+RUN echo "Hi, i am run - 2"
+RUN echo "Hi, i am run - 3"
+
+CMD echo "Hi, i am CMD-1"
+CMD echo "Hi, i am CMD-2"
+CMD echo "Hi, i am CMD-3"
+
+
+=> Create a file (filename: Dockerfile)
+$ vi Dockerfile
+
+=> Copy above sample docker file content and keep in docker file  (Esc + :wq)
+
+# Create docker image using Dockerfile
+
+$ docker build -t <image-name> .
+
+# login into docker hub account from docker machine
+$ docker login
+
+Note: Enter your docker hub account credentials.
+	
+# tag docker image
+$ docker tag <image-name> <tagname>
+
+Ex :  $ docker tag myimg1 Pankajit/myimg1
+
+# Push Docker image
+
+$ docker push <Tag-name>
+
+
+===================================================
+Q) Can we use user defined name for Dockerfile ?
+
+Ans) Yes, we can do it.
+
+$ docker build -f <filename> -t <imagename> .
+
+==================================================
+
+
+
+=============
+ENTRYPOINT
+=============
+
+=> It is used to execute instructions while creating container
+
+Synatx:
+
+ENTRYPOINT [ "echo" , "Container Created Successfully" ]
+
+ENTRYPOINT [ "java", "-jar", "target/springboot.jar" ]
+
+
+========================================================
+Q) What is the difference between CMD and ENTRYPOINT ?
+========================================================
+
+=> CMD instructions we can override while creating container
+
+=> ENTRYPOINT instructions we can't override
+
+
+
+=========
+WORKDIR
+========
+
+=> It is used to specify working directory for image and container
+
+
+Syntax: 
+
+
+WORKDIR /app/usr/
+
+========
+ENV
+=======
+
+=> ENV is used to set Environment Variables
+
+Ex:
+
+ENV java /etc/softwares/jdk
+
+
+=========
+EXPOSE
+=========
+
+=> It is used to specify on which port number our docker container wil run
+
+EX:
+
+EXPOSE 8080
+
+====
+ARG
+====
+
+=> By using ARG we can take dynamic values from CLI
+
+=> It is used to remove hard coded values in Dockerfile
+
+Ex:
+
+ARG branch
+
+RUN git clone -b $branch <repo-url>
+
+$ docker build -t <imagename> --build-arg branch=master .
+
+=========
+USER
+=========
+
+=> It is used to specify username for creating image / container
+
+
+Ex:
+
+USER dockeruser
+
+========
+VOLUME
+=======
+
+=> It is used to specify docker volume storage location
+
+
+=> Volumes are used for storage purpose
+
+=========
+LABEL
+=======
+=> It is used to add METADATA to docker objects in key-value format
+
+Ex:
+
+LABEL name="sbi_image"
